@@ -1,0 +1,99 @@
+<div>
+  <label for="startId" class="bold">From: </label>
+  <select id="startId" [(ngModel)]="selStartId" [disabled]="!contentList || (contentList?.length === 0)">
+    <option value="">Select</option>
+    <option *ngFor="let contentObj of contentList" [value]="contentObj.id">{{contentObj?.value}}</option>
+  </select>
+  <label for="endId" class="bold">To: </label>
+  <select id="endId" [(ngModel)]="selEndId" [disabled]="!selStartId">
+    <option value="">Select</option>
+    <ng-container *ngFor="let contentObj of contentList">
+      <option *ngIf="(selStartId) && (selStartId !== contentObj?.id)" [value]="contentObj.id">{{contentObj?.value}}
+      </option>
+    </ng-container>
+  </select>
+  <button (click)="drawLeaderLine(selStartId, selEndId)">Draw Leader Line</button>
+  <button (click)="saveFlowChart()">Save Flow Chart</button>
+</div>
+
+<section cdkDropListGroup>
+  <div class="button-parent" cdkDropList [cdkDropListData]="btnContentList">
+    <ng-container *ngFor="let contentObj of btnContentList;let idx=index">
+      <div [attr.id]="contentObj.id" [class]="contentObj.type" class="card" cdkDrag>
+        <ng-container *ngTemplateOutlet="cardDragHandler;">
+        </ng-container>
+        <ng-container *ngTemplateOutlet="cardBodyRef; context: { contentObj: contentObj }">
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="flow-chart-container" #flowChartContainer [style.position]="'relative'" cdkDropList
+    [cdkDropListData]="contentList" (cdkDropListDropped)="cdkDrop($event)">
+    <ng-container *ngFor="let contentObj of contentList;let idx=index">
+      <ng-container
+        *ngTemplateOutlet="ref1; context: { flowChartContainer: flowChartContainer, contentObj: contentObj, idx: idx }">
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <div>
+    <h1>Connections For Selected Element: {{selContentObj?.value}}</h1>
+    <ul>
+      <li *ngFor="let selElemLineId of selElemLineIdsList; let idx=index">
+        <div>
+          {{selElemLineId}}
+          <button (click)="removeConnection(selElemLineId, idx)">
+            Delete
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+
+<ng-template #ref1 let-contentObj="contentObj" let-idx="idx" let-flowChartContainer="flowChartContainer">
+  <div #draggableDiv [attr.id]="contentObj.id" [class]="contentObj.type" class="card"
+    (cdkDragEnded)="onDragEnd(draggableDiv, flowChartContainer, idx)" cdkDragBoundary=".flow-chart-container" cdkDrag>
+
+    <ng-container *ngTemplateOutlet="cardDragHandler;">
+    </ng-container>
+
+    <ng-container *ngTemplateOutlet="cardBodyRef; context: { contentObj: contentObj }">
+    </ng-container>
+
+    <ng-container
+      *ngTemplateOutlet="cardFooterRef; context: { draggableDiv: draggableDiv, contentObj: contentObj, idx: idx }">
+    </ng-container>
+
+  </div>
+</ng-template>
+
+<ng-template #cardDragHandler>
+  <div class="card-drag-handler" cdkDragHandle>
+    <svg width="24px" fill="currentColor" viewBox="0 0 24 24">
+      <path
+        d="M10 9h4V6h3l-5-5-5 5h3v3zm-1 1H6V7l-5 5 5 5v-3h3v-4zm14 2l-5-5v3h-3v4h3v3l5-5zm-9 3h-4v3H7l5 5 5-5h-3v-3z">
+      </path>
+      <path d="M0 0h24v24H0z" fill="none"></path>
+    </svg>
+  </div>
+</ng-template>
+
+<ng-template #cardBodyRef let-contentObj="contentObj">
+  <div class="card-body">
+    <b>{{contentObj.value}}</b> {{ "(" +contentObj.id +")" }}
+  </div>
+</ng-template>
+
+<ng-template #cardFooterRef let-contentObj="contentObj" let-draggableDiv="draggableDiv" let-idx="idx">
+  <div class="card-footer">
+    <button (click)="onEditLinksClick(contentObj)">
+      Edit Links
+    </button>
+    <button (click)="removeCard(draggableDiv, idx)">
+      Delete
+    </button>
+  </div>
+</ng-template>

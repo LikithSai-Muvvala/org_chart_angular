@@ -1,0 +1,76 @@
+* {
+  box-sizing: border-box;
+}
+
+p {
+  font-family: Lato;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.button-parent {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.flow-chart-container {
+  margin-top: 8px;
+  width: 100%;
+  height: 500px;
+  background-color: grey;
+  overflow: auto;
+  position: relative;
+}
+
+.button-parent,
+.flow-chart-container {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -o-user-select: none;
+}
+
+.card {
+  width: 200px;
+  height: 100px;
+  color: white;
+  margin: 0;
+  padding: 0;
+
+  .card-drag-handler {
+    color: #ccc;
+    cursor: move;
+    width: 24px;
+    height: 24px;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-around;
+  }
+}
+
+.translation {
+  background-color: #955251;
+}
+
+.language {
+  background-color: #88B04B;
+}
+
+.approver {
+  background-color: #34568B;
+}
